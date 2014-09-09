@@ -49,23 +49,11 @@ for i=1:M
     p=vec(POS[m,1:3])
     R=vec(POS[m,4:6])
     Ed,Bd=Hertz_dipole (r, p, R, phase, freq)
-    E+=Ed
+    E+=E
     B+=Bd
   end
   Z[i]=sqrt(sum(abs(E).^2))/sqrt(sum(abs(B).^2))*mu0 #real(E).^2#0.5*numpy.cross(E.T,conjugate(B.T))
 end
 
 using PyPlot
-pygui(false)
-figure(num=1, dpi=300)
-pcolor(x,z,Z[:,:]',cmap="jet")
-clim(0,1000)
-colorbar()
-axis("scaled")
-xlim(0,L)
-ylim(0,h)
-xlabel("x/m")
-ylabel("z/m")
-println ("Saving graph...")
-savefig("img_$order.png",bbox="tight")
-clf()
+plt.hist(Z)
