@@ -8,7 +8,7 @@ function IC(l,p,h,X,Y,Z,tilt,azimut,phase,amplitude,order)
 <<<<<<< HEAD
   POS=zeros((order+1)^3*8,7)
 =======
-  POS=zeros((order+1)^3*8,7)#[0 0 0 0 0 0 0]
+  POS=zeros((order+1)^3*8,7)
 >>>>>>> FETCH_HEAD
   count=1
   for i=0:order
