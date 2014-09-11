@@ -10,7 +10,7 @@ L=5
 l=4
 h=3
 losses= 0.998
-order=0
+order=100
 
 const freq=.5e9
 
@@ -29,14 +29,19 @@ amplitude=sqrt(12*pi*c*Pow/(mu0*(2*pi*freq)^4))
 
 
 #Images
-POSs=IC(L,l,h,X,Y,Z,tilt,azimut,phase,amplitude,order)
+POS=IC(L,l,h,X,Y,Z,tilt,azimut,phase,amplitude,order)
+
+#using HDF5,JLD
+#@load "POS100.jld" POS
+
 numberofimages=1+2*order+(2*order*(order+1)*(2*order+1))/3
-POS=POSs[1:numberofimages,:]
+POS=POS[1:numberofimages,:]
+
 
 #observation points
-dx=0.05
-dy=0.05
-dz=0.05
+dx=0.02
+dy=0.02
+dz=0.02
 const  nx=int(L/dx)
 const  xmax=L
 const  ny=int(h/dy)
@@ -72,43 +77,44 @@ for i=1:nx
 end
 
 using PyPlot
-pygui(false)
-figure(num=1, figsize=(10,25), dpi=72)
-suptitle("\$z=1\$ m")
 
-subplot(311)
+figure(1)
 title("\$E_z\$ (V/m)")
-pcolor(x,y,Ez[:,:]',cmap="jet")
+pcolor(x,y,Ez',cmap="jet")
 clim(0,20)
 colorbar()
 axis("scaled")
 xlim(0,L)
 ylim(0,l)
-#xlabel("\$x\$/m")
+xlabel("\$x\$/m")
 ylabel("\$y\$/m")
+savefig("E_$order.png",bbox="tight")
+clf()
 
-subplot(312)
+
+figure(2)
 title("\$H_z\$ (A/m)")
-pcolor(x,y,Bz[:,:]'/mu0,cmap="jet")
-clim(0,.2)
+pcolor(x,y,Bz'/mu0,cmap="jet")
+#clim(0,.2)
 colorbar()
 axis("scaled")
 xlim(0,L)
 ylim(0,l)
-#xlabel("x/m")
+xlabel("x/m")
 ylabel("\$y\$/m")
+savefig("H_$order.png",bbox="tight")
+clf()
 
-subplot(313)
+
+figure(3)
 title("\$Z\$ (\$ \\Omega\$)")
-pcolor(x,y,Z[:,:]',cmap="jet")
+pcolor(x,y,Z',cmap="jet")
 clim(0,1000)
-colorbar()
+colorbar(ticks=[0,100,200,300,120*pi,500,60*pi^2,700,800,900,1000])
 axis("scaled")
 xlim(0,L)
 ylim(0,l)
 #xlabel("x/m")
 ylabel("\$y\$/m")
-
-println ("Saving graph...")
-savefig("img_$order.png",bbox="tight")
+savefig("Z_$order.png",bbox="tight")
 clf()
