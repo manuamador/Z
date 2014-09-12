@@ -19,7 +19,7 @@ tilt=0.3
 azimut=2*pi*rand()
 phase=0
 
-const freq=1e9
+const freq=3e9
 #dipole moment
 #total time averaged radiated power P= 1 W dipole moment => |p|=sqrt(12πcP/µOω⁴)
 Pow=1
@@ -62,7 +62,7 @@ end
 #@save "Z.jld" Z=Z
 
 using PyPlot
-plt.hist(Z,30)
+plt.hist(Z,int(sqrt(M)))
 xlabel("\$ Z\$ in \$\\Omega\$")
 ylabel("Probability")
 grid()
