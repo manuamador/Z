@@ -1,7 +1,7 @@
 Z
 =
 
-Some air impedance computations in various environements.
+Some air impedance computations in electromagnetic cavities.
 
 #Requirements
 * [Julia] (https://github.com/JuliaLang/julia)
