@@ -10,7 +10,7 @@ L=5
 l=4
 h=3
 losses= 0.998
-order=20
+order=10
 
 const freq=.5e9
 
@@ -59,20 +59,20 @@ for i=1:nx
   perc=round(i/nx*1000)/10
   println("$perc %")
   for j=1:ny
-    r=[x[i],y[j],z]
+    r=[x[i],y[j],z] #position of the receiver
     E=zeros(Complex128,3)
     B=zeros(Complex128,3)
     for m=1:numberofimages
-      p=vec(POS[m,1:3])
-      R=vec(POS[m,4:6])
-      ord=POS[m,7]
-      Ed,Bd=Hertz_dipole (r, p*losses^ord, R, phase, freq)
+      p=vec(POS[m,1:3]) #image dipole moment
+      R=vec(POS[m,4:6]) #image dipole position
+      ord=POS[m,7] #order of the dipole
+      Ed,Bd=Hertz_dipole (r, p*losses^ord, R, phase, freq) #fields computation
       E+=Ed
       B+=Bd
     end
-    Z[i,j]=sqrt(sum(abs(E).^2))/sqrt(sum(abs(B).^2))*mu0 #real(E).^2#0.5*numpy.cross(E.T,conjugate(B.T))
-    Et[i,j]=sqrt(sum(abs(E).^2))
-    Bt[i,j]=sqrt(sum(abs(B).^2))
+    Z[i,j]=sqrt(sum(abs(E).^2))/sqrt(sum(abs(B).^2))*mu0 #real(E).^2#0.5*numpy.cross(E.T,conjugate(B.T)) #impedance
+    Et[i,j]=sqrt(sum(abs(E).^2)) #total E-field
+    Bt[i,j]=sqrt(sum(abs(B).^2)) #total B-field
   end
 end
 
