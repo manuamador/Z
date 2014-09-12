@@ -10,7 +10,7 @@ L=5
 l=4
 h=3
 losses= 0.998
-order=100
+order=20
 
 const freq=.5e9
 
@@ -32,7 +32,7 @@ amplitude=sqrt(12*pi*c*Pow/(mu0*(2*pi*freq)^4))
 POS=IC(L,l,h,X,Y,Z,tilt,azimut,phase,amplitude,order)
 
 #using HDF5,JLD
-#@load "POS100.jld" POS
+#@load "POS.jld" POS
 
 numberofimages=1+2*order+(2*order*(order+1)*(2*order+1))/3
 POS=POS[1:numberofimages,:]
@@ -53,8 +53,8 @@ const  y=linspace(0,l,ny)
 
 println("Computing the radiation...")
 Z=zeros(nx,ny)
-Ez=zeros(nx,ny)
-Bz=zeros(nx,ny)
+Et=zeros(nx,ny)
+Bt=zeros(nx,ny)
 for i=1:nx
   perc=round(i/nx*1000)/10
   println("$perc %")
@@ -71,17 +71,18 @@ for i=1:nx
       B+=Bd
     end
     Z[i,j]=sqrt(sum(abs(E).^2))/sqrt(sum(abs(B).^2))*mu0 #real(E).^2#0.5*numpy.cross(E.T,conjugate(B.T))
-    Ez[i,j]=abs(E[3])
-    Bz[i,j]=abs(B[3])
+    Et[i,j]=sqrt(sum(abs(E).^2))
+    Bt[i,j]=sqrt(sum(abs(B).^2))
   end
 end
 
+#Some figures
 using PyPlot
 
-figure(1)
-title("\$E_z\$ (V/m)")
-pcolor(x,y,Ez',cmap="jet")
-clim(0,20)
+figure(1) #total E-field
+title("\$\\vert E\\vert\$ (V/m)")
+pcolor(x,y,Et',cmap="jet")
+#clim(0,20)
 colorbar()
 axis("scaled")
 xlim(0,L)
@@ -92,9 +93,9 @@ savefig("E_$order.png",bbox="tight")
 clf()
 
 
-figure(2)
-title("\$H_z\$ (A/m)")
-pcolor(x,y,Bz'/mu0,cmap="jet")
+figure(2) #total H-field
+title("\$\\vert H\\vert\$ (A/m)")
+pcolor(x,y,Bt'/mu0,cmap="jet")
 #clim(0,.2)
 colorbar()
 axis("scaled")
@@ -106,7 +107,7 @@ savefig("H_$order.png",bbox="tight")
 clf()
 
 
-figure(3)
+figure(3) #wave impedance
 title("\$Z\$ (\$ \\Omega\$)")
 pcolor(x,y,Z',cmap="jet")
 clim(0,1000)
