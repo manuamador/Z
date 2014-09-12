@@ -9,7 +9,7 @@ include("dipole.jl")
 L=5
 l=4
 h=3
-order=30
+order=100
 
 #dipole
 X=1.2
@@ -25,10 +25,10 @@ const freq=1e9
 Pow=1
 amplitude=sqrt(12*pi*c*Pow/(mu0*(2*pi*freq)^4))
 
-POS=IC(L,l,h,X,Y,Z,tilt,azimut,phase,amplitude,order)
+#POS=IC(L,l,h,X,Y,Z,tilt,azimut,phase,amplitude,order)
+using HDF5,JLD
 
-#using HDF5,JLD
-#@load "POS100.jld" POS
+@load "POS100.jld" POS
 
 numberofimages=1+2*order+(2*order*(order+1)*(2*order+1))/3
 POS=POS[1:numberofimages,:]
@@ -58,10 +58,11 @@ for i=1:M
   Z[i]=sqrt(sum(abs(E).^2))/sqrt(sum(abs(B).^2))*mu0 #real(E).^2#0.5*numpy.cross(E.T,conjugate(B.T))
 end
 
-using HDF5,JLD
 @save "Z.jld" Z=Z
 
 using PyPlot
 plt.hist(Z,30)
 xlabel("\$ Z\$ in \$\\Omega\$")
 ylabel("Probability")
+grid()
+savefig("Zstat.pdf",bbox="tight")
